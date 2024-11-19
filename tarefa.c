@@ -250,7 +250,6 @@ void carregar_dados() {
   if (!file_trans) {
     printf("Arquivo de transações não encontrado.\n");
     return;
-    
   }
 
   fread(num_transacoes, sizeof(int), MAX_USERS,
