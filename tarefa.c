@@ -110,6 +110,7 @@ void comprar_cripto(Usuario *usuario, char *senha, char tipo[], float valor) {
     usuario->carteira.reais -= valor_com_taxa;
     usuario->carteira.bitcoin += valor / cotacao.cotacao_bitcoin;
     registrar_transacao(usuario, "compra", "bitcoin", -valor, taxa);
+    printf("Compra de Bitcoin bem-sucedida!\n");
   } else if (strcmp(tipo, "ethereum") == 0) {
     taxa = valor * 0.01;
     valor_com_taxa = valor + taxa;
@@ -120,6 +121,7 @@ void comprar_cripto(Usuario *usuario, char *senha, char tipo[], float valor) {
     usuario->carteira.reais -= valor_com_taxa;
     usuario->carteira.ethereum += valor / cotacao.cotacao_ethereum;
     registrar_transacao(usuario, "compra", "ethereum", -valor, taxa);
+    printf("Compra de Ethereum bem-sucedida!\n");
   } else if (strcmp(tipo, "ripple") == 0) {
     taxa = valor * 0.01;
     valor_com_taxa = valor + taxa;
@@ -130,6 +132,7 @@ void comprar_cripto(Usuario *usuario, char *senha, char tipo[], float valor) {
     usuario->carteira.reais -= valor_com_taxa;
     usuario->carteira.ripple += valor / cotacao.cotacao_ripple;
     registrar_transacao(usuario, "compra", "ripple", -valor, taxa);
+    printf("Compra de Ripple bem-sucedida!\n");
   } else {
     printf("Tipo de criptomoeda inválido!\n");
   }
@@ -142,11 +145,10 @@ void vender_cripto(Usuario *usuario, char *senha, char tipo[], float valor) {
     return;
   }
 
-  float taxa, valor_com_taxa;
+  float taxa;
 
   if (strcmp(tipo, "bitcoin") == 0) {
     taxa = valor * 0.03;
-    valor_com_taxa = valor + taxa;
     if (usuario->carteira.bitcoin < valor / cotacao.cotacao_bitcoin) {
       printf("Saldo insuficiente em BTC!\n");
       return;
@@ -154,9 +156,9 @@ void vender_cripto(Usuario *usuario, char *senha, char tipo[], float valor) {
     usuario->carteira.reais += valor - taxa;
     usuario->carteira.bitcoin -= valor / cotacao.cotacao_bitcoin;
     registrar_transacao(usuario, "venda", "bitcoin", valor, taxa);
+    printf("Venda de Bitcoin bem-sucedida!\n");
   } else if (strcmp(tipo, "ethereum") == 0) {
     taxa = valor * 0.02;
-    valor_com_taxa = valor + taxa;
     if (usuario->carteira.ethereum < valor / cotacao.cotacao_ethereum) {
       printf("Saldo insuficiente em ETH!\n");
       return;
@@ -164,9 +166,9 @@ void vender_cripto(Usuario *usuario, char *senha, char tipo[], float valor) {
     usuario->carteira.reais += valor - taxa;
     usuario->carteira.ethereum -= valor / cotacao.cotacao_ethereum;
     registrar_transacao(usuario, "venda", "ethereum", valor, taxa);
+    printf("Venda de Ethereum bem-sucedida!\n");
   } else if (strcmp(tipo, "ripple") == 0) {
     taxa = valor * 0.01;
-    valor_com_taxa = valor + taxa;
     if (usuario->carteira.ripple < valor / cotacao.cotacao_ripple) {
       printf("Saldo insuficiente em XRP!\n");
       return;
@@ -174,6 +176,7 @@ void vender_cripto(Usuario *usuario, char *senha, char tipo[], float valor) {
     usuario->carteira.reais += valor - taxa;
     usuario->carteira.ripple -= valor / cotacao.cotacao_ripple;
     registrar_transacao(usuario, "venda", "ripple", valor, taxa);
+    printf("Venda de Ripple bem-sucedida!\n");
   } else {
     printf("Tipo de criptomoeda inválido!\n");
   }
@@ -231,6 +234,11 @@ void carregar_dados() {
   if (!file) {
     printf("Arquivo de usuários não encontrado. Iniciando com dados vazios.\n");
     return;
+    FILE *file = fopen("usuarios.dat", "wb");
+    if (!file) {
+      perror("Erro ao abrir arquivo usuarios.dat");
+      return;
+    }
   }
 
   fread(&num_usuarios, sizeof(int), 1, file); // Carrega o número de usuários
